@@ -1,9 +1,25 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi;
 using PlanetShoesAPI.Data;
 using PlanetShoesAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// --- CONFIGURACIÓN DE CORS ---
+var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: myAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins(
+                "http://localhost:5173",      // Vite (React moderno) en desarrollo
+                "https://zapateria-planet.vercel.app/"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+        });
+});
+// --- FIN CONFIGURACIÓN DE CORS ---
 
 // 1. Configuración de la Base de Datos con Resiliencia para Hamachi
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -55,7 +71,9 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseHttpsRedirection();
+app.UseCors(myAllowSpecificOrigins); // CORS habilitado
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
