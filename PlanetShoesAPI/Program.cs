@@ -4,7 +4,7 @@ using PlanetShoesAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- CONFIGURACI覰 DE CORS ---
+// --- CONFIGURACI脫N DE CORS ---
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
@@ -19,9 +19,9 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
         });
 });
-// --- FIN CONFIGURACI覰 DE CORS ---
+// --- FIN CONFIGURACI脫N DE CORS ---
 
-// 1. Configuraci髇 de la Base de Datos con Resiliencia para Hamachi
+// 1. Configuraci贸n de la Base de Datos con Resiliencia para Hamachi
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString, sql => {
@@ -34,14 +34,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddControllers();
 
-// 2. Configuraci髇 de Swagger Simplificada (Sin versiones)
+// 2. Configuraci贸n de Swagger Simplificada (Sin versiones)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo // "v1" se mantiene internamente como identificador t閏nico, pero no lo ver醩 en las rutas
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo // "v1" se mantiene internamente como identificador t茅cnico, pero no lo ver谩s en las rutas
     {
         Title = "Planet Shoes API",
-        Description = "Documentaci髇 t閏nica de los endpoints de Planet Shoes"
+        Description = "Documentaci贸n t茅cnica de los endpoints de Planet Shoes"
     });
 
     //var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -56,6 +56,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddScoped<IModelosService, ModelosService>();
 builder.Services.AddScoped<IVendedoresService, VendedoresService>();
 builder.Services.AddScoped<IPedidosService, PedidosService>();
+builder.Services.AddScoped<IModelosSugeridosService, ModelosSugeridosService>();
 
 var app = builder.Build();
 
@@ -66,7 +67,7 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("./swagger/v1/swagger.json", "Planet Shoes API");
     c.RoutePrefix = string.Empty; // Acceso directo al entrar a la URL
 
-    // Esta l韓ea oculta la secci髇 de Schemas (Models)
+    // Esta l铆nea oculta la secci贸n de Schemas (Models)
     c.DefaultModelsExpandDepth(-1);
 });
 

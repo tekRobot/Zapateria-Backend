@@ -8,12 +8,25 @@ namespace PlanetShoesAPI.Controllers
     public class ModelosController : ControllerBase
     {
         private readonly IModelosService _service;
-        public ModelosController(IModelosService service) => _service = service;
+        private readonly IModelosSugeridosService _sugeridosService;
 
-        [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] string? estilo = null)
+        public ModelosController(IModelosService service, IModelosSugeridosService sugeridosService)
+        {
+            _service = service;
+            _sugeridosService = sugeridosService;
+        }
+
+        [HttpGet("estilo/{estilo}")]
+        public async Task<IActionResult> GetByEstilo(string estilo)
         {
             var result = await _service.GetModelosAsync(estilo);
+            return result.Success ? Ok(result) : StatusCode(500, result);
+        }
+
+        [HttpGet("estilo/{estilo}/sugeridos")]
+        public async Task<IActionResult> GetSugeridosByEstilo(string estilo)
+        {
+            var result = await _sugeridosService.GetSugeridosByEstiloAsync(estilo);
             return result.Success ? Ok(result) : StatusCode(500, result);
         }
     }

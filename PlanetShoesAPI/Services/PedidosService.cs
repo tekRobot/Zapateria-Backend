@@ -9,6 +9,7 @@ namespace PlanetShoesAPI.Services
     {
         Task<APIResponse<int>> CrearPedidoPartidaAsync(PedidoPartidaDTO dto);
         Task<APIResponse<List<PedidoDetalleDTO>>> GetDetallesPedidosAsync();
+        Task<APIResponse<bool>> SurtirPedidoAsync(int pedidoId);
     }
 
     public class PedidosService : IPedidosService
@@ -50,6 +51,34 @@ namespace PlanetShoesAPI.Services
         
             return res;
         }
+        public async Task<APIResponse<bool>> SurtirPedidoAsync(int pedidoId)
+        {
+            var res = new APIResponse<bool>();
+            try
+            {
+                var afectados = await _context.PedidoPartidas
+                    .Where(p => p.PedidoId == pedidoId)
+                    .ExecuteUpdateAsync(s => s.SetProperty(p => p.Surtido, 1));
+
+                if (afectados == 0)
+                {
+                    res.Success = false;
+                    res.Message = $"No se encontró el pedido con ID {pedidoId}.";
+                    return res;
+                }
+
+                res.Data = true;
+                res.Success = true;
+                res.Message = "Pedido marcado como surtido correctamente.";
+            }
+            catch (Exception ex)
+            {
+                res.Success = false;
+                res.Message = "Error al surtir el pedido.";
+            }
+            return res;
+        }
+
         public async Task<APIResponse<List<PedidoDetalleDTO>>> GetDetallesPedidosAsync()
         {
             var res = new APIResponse<List<PedidoDetalleDTO>>();
@@ -58,8 +87,10 @@ namespace PlanetShoesAPI.Services
                 var consulta = await (from p in _context.PedidoPartidas
                                       join v in _context.Vendedores on p.UsuarioId equals v.Id
                                       join m in _context.ModelosWeb on p.Articulo equals m.Id
+                                      where p.Surtido == 0
                                       select new PedidoDetalleDTO
                                       {
+                                          Id = p.PedidoId,
                                           Articulo = p.Articulo,
                                           Surtido = p.Surtido,
                                           PorSurtir = p.PorSurtir,

@@ -2,6 +2,7 @@
 
 public class PedidoDetalleDTO
 {
+    public int Id { get; set; }
     public string Articulo { get; set; } = null!;
     public double Surtido { get; set; }
     public double PorSurtir { get; set; }

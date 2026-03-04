@@ -8,6 +8,7 @@ namespace PlanetShoesAPI.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public DbSet<ModeloWeb> ModelosWeb { get; set; }
+        public DbSet<ModeloSugerido> ModelosSugeridos { get; set; }
         public DbSet<Vendedor> Vendedores { get; set; }
         public DbSet<PedidoPartida> PedidoPartidas { get; set; }
 
@@ -28,6 +29,22 @@ namespace PlanetShoesAPI.Data
                 e.Property(p => p.Color).HasColumnName("Color");
                 e.Property(p => p.Material).HasColumnName("Material");
                 e.Property(p => p.Genero).HasColumnName("Genero");
+            });
+
+            modelBuilder.Entity<ModeloSugerido>(e => {
+                e.HasNoKey();
+                e.ToView("ModelosSugeridos");
+                e.Property(p => p.Estilo).HasColumnName("Estilo");
+                e.Property(p => p.EstiloSugerido).HasColumnName("EstiloSug");
+                e.Property(p => p.Marca).HasColumnName("marca");
+                e.Property(p => p.Genero).HasColumnName("Genero");
+                e.Property(p => p.Material).HasColumnName("material");
+                e.Property(p => p.Linea).HasColumnName("linea");
+                e.Property(p => p.Rango).HasColumnName("rango");
+                e.Property(p => p.Forma).HasColumnName("forma");
+                e.Property(p => p.Uso).HasColumnName("Uso");
+                e.Property(p => p.Modelo).HasColumnName("modelo");
+                e.Property(p => p.FotoSugerida).HasColumnName("FotoSug");
             });
 
             modelBuilder.Entity<Vendedor>(e => {
